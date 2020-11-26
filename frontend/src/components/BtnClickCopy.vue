@@ -6,7 +6,7 @@
     <input id="text-to-copy" type="hidden" :value="text" />
     <v-snackbar v-model="snackbar" :timeout="2000" :color="color" text>
       <div class="text-center">
-        <span class="streamid">{{ text }}</span>
+        <span>{{ text }}</span>
         {{ message }}
       </div>
     </v-snackbar>

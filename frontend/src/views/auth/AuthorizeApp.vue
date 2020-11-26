@@ -69,6 +69,23 @@
           <br />
           You can now safely close this page.
         </p>
+        <v-expansion-panels flat>
+          <v-expansion-panel v-if="appId == 'sdm'">
+            <v-expansion-panel-header class="pt-5 caption font-weight-light">
+              Not getting redirected to Speckle Manager?
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <p class="caption font-weight-light text-center">
+                Copy the access code below to add the account manually:
+                <br />
+                <btn-click-copy :text="accessCode" />
+                <code>
+                  {{ accessCode }}
+                </code>
+              </p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
     <v-snackbar v-model="registrationError" multi-line>
@@ -81,8 +98,10 @@
 import gql from "graphql-tag"
 import { onLogin } from "../../vue-apollo"
 import debounce from "lodash.debounce"
+import BtnClickCopy from "../../components/BtnClickCopy"
 export default {
   name: "AuthorizeApp",
+  components: { BtnClickCopy },
   apollo: {
     app: {
       query() {
@@ -120,6 +139,11 @@ export default {
     token: null,
     accessCode: null
   }),
+  computed: {
+    url() {
+      return window.location.href
+    }
+  },
   mounted() {
     let urlParams = new URLSearchParams(window.location.search)
     this.appId = urlParams.get("appId") || "spklwebapp"
