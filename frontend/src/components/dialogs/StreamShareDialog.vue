@@ -6,13 +6,13 @@
       <v-card-text class="pl-2 pr-2 pt-0 pb-0">
         <v-container>
           <v-row>
-            <v-col cols="12" class="pb-0">
+            <v-col cols="9" class="pb-0">
               <v-autocomplete
+                ref="collaboratorsDropdown"
                 v-model="selectedUsers"
                 :loading="$apollo.loading"
                 :items="items"
                 :search-input.sync="search"
-                :filter="filter"
                 multiple
                 counter="3"
                 chips
@@ -65,8 +65,19 @@
                 </template>
               </v-autocomplete>
             </v-col>
+            <v-col cols="3" class="pt-6 pb-0">
+              <v-btn
+                class="primary mb-3"
+                :disabled="
+                  !selectedUsers || selectedUsers.length === 0 || !selectedRole
+                "
+                @click="grantStreamPermission"
+              >
+                Add
+              </v-btn>
+            </v-col>
           </v-row>
-          <v-row class="mb-5" align="center">
+          <!-- <v-row class="mb-5" align="center">
             <v-col cols="12" class="pt-4 pb-0">
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -91,25 +102,14 @@
                     </span>
                   </template>
                 </v-select>
-                <v-btn
-                  class="primary mb-3"
-                  :disabled="
-                    !selectedUsers ||
-                    selectedUsers.length === 0 ||
-                    !selectedRole
-                  "
-                  @click="grantStreamPermission"
-                >
-                  Add collaborators
-                </v-btn>
               </v-card-actions>
               <div v-if="selectedRole" class="caption text-right">
                 {{ selectedRole.description }}
               </div>
             </v-col>
-          </v-row>
+          </v-row> -->
           <v-row>
-            <v-col cols="12" class="pt-0 pb-0">
+            <v-col cols="12" class="pt-10 pb-0">
               <div class="subtitle-1 pb-2">Collaborators</div>
               <div v-for="(user, i) in stream.collaborators" :key="i">
                 <list-item-user
@@ -202,10 +202,12 @@ export default {
     },
     items() {
       let items = []
+      //exclude users already added
       this.userSearch.items.forEach((item) => {
         if (this.stream.collaborators.map((x) => x.id).indexOf(item.id) === -1)
           items.push(item)
       })
+
       return items
     }
   },
@@ -216,6 +218,10 @@ export default {
     },
     roles(val) {
       this.selectedRole = this.roles[0]
+    },
+    items(val) {
+      console.log(val)
+      this.$refs["collaboratorsDropdown"].cachedItems = val
     }
   },
   methods: {
@@ -224,9 +230,9 @@ export default {
     },
     //filters out cached items that have been added already
     //the cache-items prop is REQUIRED when using async items and a multiple prom
-    filter(item) {
-      return this.stream.collaborators.map((x) => x.id).indexOf(item.id) === -1
-    },
+    // filter(item) {
+    //   return this.stream.collaborators.map((x) => x.id).indexOf(item.id) === -1
+    // },
     remove(item) {
       console.log(item)
       const index = this.selectedUsers.map((x) => x.id).indexOf(item.id)
