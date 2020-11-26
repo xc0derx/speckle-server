@@ -20,7 +20,7 @@
         <p class="subtitle-1 font-weight-light">{{ stream.description }}</p>
 
         <p>
-          <btn-click-copy :text="stream.id"></btn-click-copy>
+          <btn-click-copy :text="url"></btn-click-copy>
           &nbsp;
           <span class="streamid">
             <router-link :to="'/streams/' + stream.id">
@@ -149,6 +149,9 @@ export default {
           (x) => x.id === this.user.id && x.role === "stream:owner"
         ).length > 0
       )
+    },
+    url() {
+      return window.location.origin + "/streams/" + this.stream.id
     }
   },
   watch: {

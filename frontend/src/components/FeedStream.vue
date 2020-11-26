@@ -34,7 +34,7 @@
 
           <v-col cols="5" class="caption text-right">
             <div class="mt-1 mr-4">
-              <btn-click-copy :text="stream.id"></btn-click-copy>
+              <btn-click-copy :text="url"></btn-click-copy>
               <router-link :to="'streams/' + stream.id" class="streamid">
                 <span>{{ stream.id }}</span>
               </router-link>
@@ -118,6 +118,11 @@ export default {
     isFeed: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    url() {
+      return window.location.origin + "/streams/" + this.stream.id
     }
   }
 }

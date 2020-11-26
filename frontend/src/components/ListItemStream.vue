@@ -13,7 +13,7 @@
     <!-- <v-spacer></v-spacer> -->
     <v-col cols="5" class="caption text-right">
       <div>
-        <btn-click-copy :text="stream.id"></btn-click-copy>
+        <btn-click-copy :text="url"></btn-click-copy>
         &nbsp;
         <span class="streamid">
           <router-link :to="'streams/' + stream.id">
@@ -92,6 +92,11 @@ export default {
       default: function () {
         return {}
       }
+    }
+  },
+  computed: {
+    url() {
+      return window.location.origin + "/streams/" + this.stream.id
     }
   }
 }
