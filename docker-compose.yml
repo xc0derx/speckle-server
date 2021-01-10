@@ -1,0 +1,45 @@
+version: "3.6"
+services:
+  postgresql:
+    image: postgres:12 
+    environment:
+      POSTGRES_DB: speckle2_dev
+      POSTGRES_PASSWORD: speckle
+      POSTGRES_USER: speckle
+    volumes:
+      - speckle-postgres-data:/var/lib/postgresql/data/
+    ports: 
+      - "5432:5432"
+  redis:
+    image: redis:6
+    ports: 
+      - "6379:6379"
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./docker/server/Dockerfile
+    environment:
+      NODE_ENV: 'production'
+      POSTGRES_URL: 'postgres://speckle:speckle@postgresql:5432/speckle2_dev'
+      REDIS_URL: 'redis://redis:6379'
+      FRONTEND_PORT: '8080'
+      TELEMETRY: 'false'
+      PGDATABASE: speckle2_dev
+      PGUSER: speckle
+      SESSION_SECRET: 'keyboard cat'
+      STRATEGY_LOCAL: 'true'
+    depends_on:
+      - postgresql
+      - redis
+    command: ["npx", "lerna", "run","dev", "--stream"]
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    volumes:
+      - ./packages/server:/src/packages/server
+      - ./packages/frontend:/src/packages/frontend
+      
+volumes:
+  speckle-postgres-data:
+    
